@@ -16,9 +16,10 @@ In the previous Embb version the communication between DSP units makes use of th
 2.4. [Responses FIFO Functional Validation](#rsps)  
 2.5. [MSS Requests FIFO](#mssreq)  
 2.6. [MSS Requests FIFO Functional Validation](#mssreqs)  
-2.7. [MSS Requests FIFO](#mssrsp)  
-2.8. [MSS Requests FIFO Functional Validation](#mssrsps)  
+2.7. [MSS Responses FIFO](#mssrsp)  
+2.8. [MSS Responses FIFO Functional Validation](#mssrsps)  
 3. [DMA](#dma)
+4. [References](#ref)  
 
 ## <a name="intro"></a>Introduction
 All DSP units of Embb share the same generic hardware architecture, the DU Shell, which comprises 3 components:  
@@ -133,4 +134,4 @@ The Responses FIFO design has been validated through a simulation environment wi
 
 ## <a name="dma">Chapter 2 - Direct Memory Access engine
 
-## References
+## <a name="ref">References
