@@ -18,7 +18,11 @@ In the previous Embb version the communication between DSP units makes use of th
 2.6. [MSS Requests FIFO Functional Validation](#mssreqs)  
 2.7. [MSS Responses FIFO](#mssrsp)  
 2.8. [MSS Responses FIFO Functional Validation](#mssrsps)  
-3. [DMA](#dma)
+3. [DMA](#dma)  
+3.1. [DMA - CTRL Interface](#dma-ctrl)  
+3.2. [DMA - MSS Interface](#dma-mss)  
+3.2.1. [MSS Arbiter](#arb)  
+3.2.2. [MSS Device](#dev)  
 4. [References](#ref)  
 
 ## <a name="intro"></a>Introduction
@@ -32,6 +36,8 @@ This project mainly focuses on the rework of the CSS communication infrastructur
 whole system.  
 Therefore, the first chapter of the current report describes in details the new CSS architecture; the second chapter specifies the new interface between DMA and MSS.
 ## <a name="css"></a>Chapter 1 - Control Sub-System
+![alt text](img/css.png "CSS")
+
 CSS is the gateway to the host system and embeds the following sub-components:
 * A control unit containing a set of control and status registers (CTRL);
 * A Direct Memory Access engine (DMA);
@@ -101,7 +107,7 @@ The **clock** source, the **synchronous active low reset** and the **chip enable
 They are asserted by default and are de-asserted in the following scenarios:
 * The FIFO is full: all the three ready signals are de-asserted;
 * The master is willing to perform a write operation but it does NOT provide at the same time both the AWADDR and the AWDATA:
-if AWVALID is equal to '1' and WVALID is equal to '0', AWREADY is de-asserted; if WVALID is equal to '1' and AWVALID is equal to '0', WREADY is de-asserted;
+if AWVALID is equal to '1' and WVALID is equal to '0', AWREADY is de-asserted; if WVALID is equal to '1' and AWVALID is equal to '0', WREADY is de-asserted.
 
 On the MSS side, the first received and not yet transmitted request, if any, is output on **REQ2MSS**, an AXI4-Lite request. As soon as the MSS handshakes the FIFO through **MSS_AWREADY**, **MSS_WREADY** and **MSS_ARREADY**, the output request is removed from the FIFO and the next request, if any, is output on REQ2MSS.  
 
@@ -113,7 +119,7 @@ The Requests FIFO design has been validated through a simulation environment wit
 * The host system issues a sequence of AXI write requests but the  AWWALID and the WVALID signals are not contemporary asserted.
 
 ### <a name="mssrsp">MSS Responses FIFO
-![alt text](img/mss_responses_fifo.png "MSS Requests FIFO")
+![alt text](img/mss_responses_fifo.png "MSS Responses FIFO")
 
 The MSS Responses FIFO is located between the MSS and the host system.  
 The **clock** source, the **synchronous active low reset** and the **chip enable** are global signals.  
@@ -133,5 +139,40 @@ The Responses FIFO design has been validated through a simulation environment wi
 * A sequence of erroneous responses is stored in the FIFO and both BREADY and RREADY are asserted.
 
 ## <a name="dma">Chapter 2 - Direct Memory Access engine
+When present in a DSP unit, DMA allows efficient data transfers inside MSS or between MSS and other memory-mapped areas in the system’s addresses space. DMA is a single-channel, 64-bits wide engine. Its main use is to upload data to process in MSS and download processing results. DMA can also be used to transfer directly between two external memory locations.
+
+### <a name="dma-ctrl">DMA - CTRL Interface
+![alt text](img/ctrldma.png "CTRL-DMA")
+
+In order to perform a DMA transfer, a set of parameters are written in the 3 CTRL registers dedicated to the DMA: dcfg, dcst and dadd. These parameters are, then, forwarded to DMA through the following interface:
+* **SRSTN**: Synchronous active low reset;
+* **CE**: Chip enable;
+* **EXEC**: Start DMA transfer;
+* **LS**: Local source flag (when set, the source of the DMA transfer is MSS and the source address is a byte offset relative to the base address of the DSP unit; when unset,
+the source is an external memory location and the
+source address is a system byte address);
+* **LD**: Local destination flag (same as source);
+* **CS**: Constant source data flag (when set, the source data is the content of the CST register);
+* **BE**: Write byte enable;
+* **LENM1**: DMA transfer length minus one (in bytes). It is a multiple of 8 bytes;
+* **CST**: Constant write data (constant value used as source data of the transfer when **CS**=1);
+* **SRC**: Source address. It is a multiple of 8 bytes;
+* **DST**: Destination address. It is a multiple of 8 bytes.
+
+As soon as the DMA transfer is completed, the DMA sets the **EOT** (End Of Transfer) flag. In case an error occurred, the DMA also sets the **ERR** flag and stores in **STATUS** a return status corresponding to an error code.
+
+### <a name="dma-mss">DMA - MSS Interface
+The communication protocol between DMA and MSS is AXI4-Lite, where DMA is the master and MSS is the slave.  
+In order to handle requests from PSS, DMA and MSS Requests FIFO, MSS embeds a set of arbiters and a set of devices handling the transaction between AXI4-Lite and a custom protocol.
+
+#### <a name="arb">MSS Arbiter
+Each MSS embeds one arbiter per block RAM. The arbiter collects all the requests addressed to a single block RAM, enables only one client according to a certain priority and sets the priority among read and write operations. Whatever the memory word width is (8 bits, 16 bits, 32 bits..), the arbiter either grants the whole memory word or nothing.
+
+#### <a name="dev">MSS Device
+Each MSS embeds one special device handling requests/responses from DMA, one special device handling requests/responses from MSS Requests FIFO and one custom device handling requests/responses from PSS.
+
 
 ## <a name="ref">References
+[1] Embb documentation - Telecom ParisTech - March 1, 2017  
+[2] AMBA® AXI™ and ACE™ Protocol Specification AXI3,
+AXI4, and AXI4-Lite ACE and ACE-Lite - ARM
