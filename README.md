@@ -179,6 +179,7 @@ Each MSS embeds one arbiter per block RAM. The arbiter collects all the requests
 #### <a name="dev">MSS Device
 Each MSS embeds one special device handling requests/responses from/to DMA, one special device handling requests/responses from/to MSS FIFOs and one custom device handling requests/responses from/to PSS.  
 Both the DMA device and the MSS FIFOs device have the same behavior.
+![alt text](img/dev.png "DEVICE")
 
 Their main functions are:  
 * handling the translation from AXI4-Lite protocol into a custom protocol and viceversa;  
