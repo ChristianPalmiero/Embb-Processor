@@ -20,7 +20,7 @@ In the previous Embb version the communication between DSP units makes use of th
 2.8. [MSS Responses FIFO Functional Validation](#mssrsps)  
 3. [DMA](#dma)  
 3.1. [DMA - CTRL Interface](#dma-ctrl)  
-3.2. [DMA - MSS Interface](#dma-mss)  
+3.2. [CSS - MSS Interface](#css-mss)  
 3.2.1. [MSS Arbiter](#arb)  
 3.2.2. [MSS Device](#dev)  
 4. [References](#ref)  
@@ -161,17 +161,28 @@ source address is a system byte address);
 * **SRC**: Source address. It is a multiple of 8 bytes;
 * **DST**: Destination address. It is a multiple of 8 bytes.
 
-As soon as the DMA transfer is completed, the DMA sets the **EOT** (End Of Transfer) flag. In case an error occurred, the DMA also sets the **ERR** flag and stores in **STATUS** a return status corresponding to an error code.
+As soon as the DMA transfer is completed, the DMA sets the **EOT** (End Of Transfer) flag. In case an error occurred, the DMA also sets the **ERR** flag and stores in **STATUS** an error code corresponding to the occurred error.
 
-### <a name="dma-mss">DMA - MSS Interface
-The communication protocol between DMA and MSS is AXI4-Lite, where DMA is the master and MSS is the slave.  
-In order to handle requests from PSS, DMA and MSS Requests FIFO, MSS embeds a set of arbiters and a set of devices handling the transaction between AXI4-Lite and a custom protocol.
+### <a name="css-mss">CSS - MSS Interface
+![alt text](img/mss.png "MSS")
+
+The CSS communicates with the MSS through two interfaces:
+* DMA - MSS: it is an AXI4-Lite interface, where DMA is the master and MSS is the slave;
+* MSS FIFOs - MSS: it is an AXI4-Lite interface, where MSS FIFOs  are the master and MSS is the slave.
+
+In order to handle requests from PSS, DMA and MSS Requests FIFO, MSS embeds a set of arbiters and a set of devices whose functions are described in the next two sections.
 
 #### <a name="arb">MSS Arbiter
-Each MSS embeds one arbiter per block RAM. The arbiter collects all the requests addressed to a single block RAM, enables only one client according to a certain priority and sets the priority among read and write operations. Whatever the memory word width is (8 bits, 16 bits, 32 bits..), the arbiter either grants the whole memory word or nothing.
+Each MSS embeds one arbiter per block RAM. The arbiter collects all the requests addressed to a single block RAM, enables only one client according to a certain priority and sets the priority among read and write operations. Whatever the memory word width is (8 bits, 16 bits, 32 bits..), the arbiter either grants the whole memory word or nothing.  
+![alt text](img/arb.png "ARBITER")
 
 #### <a name="dev">MSS Device
-Each MSS embeds one special device handling requests/responses from DMA, one special device handling requests/responses from MSS Requests FIFO and one custom device handling requests/responses from PSS.
+Each MSS embeds one special device handling requests/responses from/to DMA, one special device handling requests/responses from/to MSS FIFOs and one custom device handling requests/responses from/to PSS.  
+Both the DMA device and the MSS FIFOs device have the same behavior.
+
+Their main functions are:  
+* handling the translation from AXI4-Lite protocol into a custom protocol and viceversa;  
+* handling read and write operations.
 
 
 ## <a name="ref">References
