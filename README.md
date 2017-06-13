@@ -31,7 +31,7 @@ All DSP units of Embb share the same generic hardware architecture, the DU Shell
 * Memory Sub-System (MSS), a local storage facility;
 * Control Sub-System (CSS), responsible for interfacing with the host system and for acting as a controller of the whole DSP unit.
 
-The CSS is a generic module and is composed of several configuration registers, two FIFO queues dedicated to the communication with the host system, two FIFO queues dedicated to the communication with the MSS and/or a Direct Memory Access engine (DMA).  
+The CSS is a generic module and is composed of several configuration registers (CTRL), two FIFO queues dedicated to the communication between the host system and CTRL, two FIFO queues dedicated to the communication between the host system and the MSS, an optional Direct Memory Access engine (DMA).  
 This project mainly focuses on the rework of the CSS communication infrastructure. Furthermore, it defines new functional specifications for the execution of DMA data transfers inside MSS or between MSS and other memory locations in the
 whole system.  
 Therefore, the first chapter of the current report describes in details the new CSS architecture; the second chapter specifies the new interface between DMA and MSS.
@@ -40,16 +40,18 @@ Therefore, the first chapter of the current report describes in details the new 
 
 CSS is the gateway to the host system and embeds the following sub-components:
 * A control unit containing a set of control and status registers (CTRL);
-* A Direct Memory Access engine (DMA);
+* An optional Direct Memory Access engine (DMA);
 * AXI4-Lite requests-responses FIFOs for accessing the CTRL registers;
 * AXI4-Lite requests-responses FIFOs for accessing the MSS.
 
-CSS has three AXI4-Lite interfaces:
+Assuming that DMA is present, CSS has three AXI4-Lite interfaces:
 1. The host system is the master and the CTRL is the slave;
 2. The host system is the master and the MSS is the slave;
 3. The DMA is the master and the MSS is the slave.
 
-The first interface is used for reading from and for writing into the control and status registers, that is, to drive the DSP unit and to get information about its current state. The second interface is used for uploading data samples into MSS and for downloading processing results. The third one is used for programming the DMA, that can perform data transfers between MSS and other memory banks in the system, or move data inside MSS, without involving the main CPU.
+The first interface is used for reading from and for writing into the control and status registers, that is, to drive the DSP unit and to get information about its current state.  
+The second interface is used for uploading data samples into MSS and for downloading processing results.  
+The third interface is used for programming the DMA, that can perform data transfers between MSS and other memory banks in the system, or move data inside MSS, without involving the main CPU.
 
 ### <a name="req"></a>Requests FIFO
 ![alt text](img/requests_fifo.png "Requests FIFO")
