@@ -124,7 +124,7 @@ The Requests FIFO design has been validated through a simulation environment tha
 * The host system issues a sequence of AXI write requests -> useful to analyze the behavior of the write address and of the write data channels;
 * The host system issues a sequence of AXI read requests -> useful to analyze the behavior of the read address channel;
 * The host system issues a sequence of simultaneous AXI write and read requests -> useful to analyze the behavior of the write address, the write data and the read address channels;
-* The host system issues a sequence of AXI write requests but the AWWALID and the WVALID signals are not contemporary asserted -> useful to analyze the behavior of the READY signals.
+* The host system issues a sequence of AXI write requests but the AWWALID and the WVALID signals are not contemporary asserted -> useful to analyze the behavior of the HST_READY signals.
 
 ### <a name="mssrsp">MSS Responses FIFO
 ![alt text](img/mss_responses_fifo.png "MSS Responses FIFO")
@@ -193,7 +193,7 @@ Their main functions are:
 * handling read and write operations, that can be split in several sub-operations executed in more than one clock cycle.
 
 For the read operations, the device collects the read data and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.  
-For the write operations, the device forwards to a block RAM the data that has to be written and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.
+For the write operations, the device forwards to a block RAM the data that has to be written and grants the corresponding bytes until the combination of all the granted bytes is equal to BE.
 
 
 ## <a name="ref">References
