@@ -114,8 +114,8 @@ The **clock** source, the **synchronous active low reset** and the **chip enable
 **HST_AWREADY**, **HST_WREADY** and **HST_ARREADY** are three AXI4 ready signals that are sent back to the host system.
 They are asserted by default and are de-asserted in the following scenarios:
 * The FIFO is full: all the three ready signals are de-asserted;
-* The master is willing to perform a write operation but it does NOT provide at the same time both the AWADDR and the AWDATA:
-if AWVALID is equal to '1' and WVALID is equal to '0', AWREADY is de-asserted; if WVALID is equal to '1' and AWVALID is equal to '0', WREADY is de-asserted.
+* The master is willing to perform a write operation but it does NOT provide at the same time both the HST_AWADDR and the HST_AWDATA:
+if HST_AWVALID is equal to '1' and HST_WVALID is equal to '0', HST_AWREADY is de-asserted; if HST_WVALID is equal to '1' and HST_AWVALID is equal to '0', HST_WREADY is de-asserted.
 
 On the MSS side, the first received and not yet transmitted request, if any, is output on **REQ2MSS**, an AXI4-Lite request. As soon as the MSS handshakes the FIFO through **MSS_AWREADY**, **MSS_WREADY** and **MSS_ARREADY**, the output request is removed from the FIFO and the next request, if any, is output on REQ2MSS.  
 
