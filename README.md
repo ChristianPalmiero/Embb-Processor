@@ -192,7 +192,7 @@ Their main functions are:
 * handling the translation from AXI4-Lite protocol into a custom protocol and vice versa;  
 * handling read and write operations, that can be split in several sub-operations executed in more than one clock cycle.
 
-For the read operations, the device collects the read data and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.
+For the read operations, the device collects the read data and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.  
 For the write operations, the device forwards to a block RAM the data that has to be written and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.
 
 
