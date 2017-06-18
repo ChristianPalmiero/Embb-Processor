@@ -101,7 +101,7 @@ The Responses FIFO design has been validated through a simulation environment th
 * A sequence of erroneous responses is stored in the FIFO and both BREADY and RREADY are asserted -> useful to analyze the erroneous responses.
 
 #### <a name="ctrls"></a>TAXI Interface Functional Validation
-The **TAXI** AXI4-Lite interface where the host system is the master and the CTRL is the slave has been validated through a simulation environment that emulates the following scenarios:
+The TAXI AXI4-Lite interface where the host system is the master and the CTRL is the slave has been validated through a simulation environment that emulates the following scenarios:
 * A sequence of write operations are issued towards the CTRL;
 * A sequence of read operations are issued towards the CTRL in order to retrieve the previously written data.
 
@@ -138,7 +138,7 @@ The most important criteria for this design is the delay between internal regist
 
 #### <a name="mssrsps">MSS Responses FIFO Functional Validation
 The Responses FIFO design has been validated through a simulation environment that emulates the following scenarios:
-* A sequence of read responses is received from CTRL but both HST_BREADY and HST_RREADY are de-asserted -> useful to see if the responses are not forwarded to the host system;
+* A sequence of read responses is received from CTRL but both HST_BREADY and HST_RREADY are de-asserted  -> useful to see if the responses are not forwarded to the host system;
 * A sequence of read responses is received from CTRL and HST_RREADY is asserted -> useful to see if the responses are forwarded to the host system;
 * A sequence of read responses is received from CTRL but only HST_BREADY is asserted -> useful to see if the responses are not forwarded to the host system;
 * A sequence of write responses is received from CTRL but both HST_BREADY and HST_RREADY are de-asserted -> useful to see if the responses are not forwarded to the host system;
