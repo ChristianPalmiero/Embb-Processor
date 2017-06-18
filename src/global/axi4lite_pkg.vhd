@@ -230,11 +230,11 @@ package body axi4lite_pkg is
       res.r_data.rdata := (others => '0');
       res.r_data.rresp := (others => '0');
     elsif req_in.rvalid = '1' and req_in.bvalid = '0' then
-      res.w_resp.bresp := req_in.resp;
-      res.w_resp.bvalid := req_in.rvalid;
+      res.r_data.rresp := req_in.resp;
+      res.r_data.rvalid := req_in.rvalid;
       res.r_data.rdata := req_in.rdata;
-      res.r_data.rvalid := '0';
-      res.r_data.rresp := (others => '0');
+      res.w_resp.bvalid := '0';
+      res.w_resp.bresp := (others => '0');
     else
       res.w_resp.bresp := (others => '0');
       res.w_resp.bvalid := '0';

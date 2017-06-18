@@ -83,6 +83,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.axi4lite_pkg.all;
+
 package global is
 
 -- pragma translate_off
@@ -327,7 +329,7 @@ package global is
     mss2dma: mss2dma_type;
     mss2rsp: axi4lite_s2m_type;
   end record;
-  constant mss2css_none: mss2css_type := (mss2vci => mss2dma_none, mss2dma => mss2dma_none, mss2uc => mss2uc_none);
+  constant mss2css_none: mss2css_type := (mss2dma => mss2dma_none, mss2rsp => axi4lite_s2m_none);
 
   -- DSP request
   type dsp_request_type is record 
