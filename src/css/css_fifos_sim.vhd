@@ -17,6 +17,7 @@ use std.env.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
 
 library random_lib;
 use random_lib.rnd.all;
@@ -49,6 +50,7 @@ architecture sim of css_fifos_sim is
   signal iaxi_in        : axi4lite_s2m_type;
   signal iaxi_out       : axi4lite_m2s_type;
   signal eos            : boolean := false;
+  signal address        : axi4lite_addr_type;
   constant pa_rmask : std_ulogic_vector := x"ffffffffffffffffffffffffffffffffffffffffffffffff";
   constant pa_wmask : std_ulogic_vector := x"ffffffffffffffffffffffffffffffffffffffffffffffff";
 
@@ -99,6 +101,7 @@ begin
     maxi_in <= axi4lite_m2s_none;
     taxi_in <= axi4lite_m2s_none;
     iaxi_in <= axi4lite_s2m_none;
+    address <= x"000FFF00";
 
     for i in 1 to 10 loop
       wait until rising_edge(clk);
@@ -109,30 +112,40 @@ begin
       wait until rising_edge(clk);
     end loop;
 
+    for k in 1 to 5 loop
     -- WRITE
     taxi_in.axi4lite_request <= axi4lite_request_rnd;
     taxi_in.axi4lite_request.w_addr.awvalid <= '1';
-    taxi_in.axi4lite_request.w_addr.awaddr <= x"000FFF00";
+    taxi_in.axi4lite_request.w_addr.awaddr <= address;
     taxi_in.axi4lite_request.w_data.wvalid <= '1';
     taxi_in.axi4lite_request.r_addr <= axi4lite_read_addr_none;
     taxi_in.bready <= '1';
     taxi_in.rready <= '1';
+    address <= address + 8;
     for i in 1 to n loop
       wait until rising_edge(clk);
       wait for 2 ns;
       taxi_in.axi4lite_request <= axi4lite_request_none;
     end loop;
+    end loop;
+ 
+    address <= x"000FFF00";
+    wait until rising_edge(clk);
+    wait for 2 ns;
 
+    for k in 1 to 5 loop
     -- READ
     taxi_in.axi4lite_request <= axi4lite_request_rnd;
     taxi_in.axi4lite_request.r_addr.arvalid <= '1';
-    taxi_in.axi4lite_request.r_addr.araddr <= x"000FFF00";
+    taxi_in.axi4lite_request.r_addr.araddr <= address;
     taxi_in.axi4lite_request.w_data <= axi4lite_write_data_none;
     taxi_in.axi4lite_request.w_addr <= axi4lite_write_addr_none;
+    address <= address + 8;
     for i in 1 to n loop
       wait until rising_edge(clk);
       wait for 2 ns;
       taxi_in.axi4lite_request <= axi4lite_request_none;
+    end loop;
     end loop;
     
     eos <= true;
