@@ -45,10 +45,12 @@ CSS is the gateway to the host system and embeds the following sub-components:
 * AXI4-Lite requests-responses FIFOs for accessing the CTRL registers;
 * AXI4-Lite requests-responses FIFOs for accessing the MSS.
 
-Assuming that DMA is present, CSS has three AXI4-Lite interfaces:
+Assuming that DMA is present, CSS has five AXI4-Lite interfaces:
 1. The host system is the master and the CTRL is the slave (**TAXI**);
-2. The host system is the master and the MSS is the slave (**MAXI**);
-3. The DMA is the master and the MSS is the slave (**IAXI**).
+2. The host system is the master and the MSS FIFOs are the slave (**MAXI**);
+3. The MSS FIFOs are the master and the MSS is the slave (**REQ2MSS-MSS2RSP**);
+4. The DMA is the master and the host system is the slave (**IAXI**);
+5. The DMA is the master and the MSS is the slave (**DMA2MSS-MSS2DMA**).
 
 The first interface is used for reading from and for writing into the control and status registers, that is, to drive the DSP unit and to get information about its current state.  
 The second interface is used for uploading data samples into MSS and for downloading processing results.  
@@ -195,6 +197,14 @@ Their main functions are:
 For the read operations, the device collects the read data and grant the corresponding bytes until the combination of all the granted bytes is equal to BE.  
 For the write operations, the device forwards to a block RAM the data that has to be written and grants the corresponding bytes until the combination of all the granted bytes is equal to BE.
 
+## <a name="status">Current Status
+* The Requests-Responses FIFOs have been fully designed and validated;
+* The interface between the CTRL and the Requests-Responses FIFOs has been fully reworked and validated;
+* The specifications of the interface between the CTRL and the DMA have been defined;
+* The interface between the DMA and the host system (IAXI) has been fully reworked;
+* The specifications of the interface between the DMA and the MSS have been defined;
+* The MSS Requests-Responses FIFOs have been fully designed and validated;
+* The specifications of the MSS arbiter and of the MSS devices have been defined.
 
 ## <a name="ref">References
 [1] Embb documentation - Telecom ParisTech - March 1, 2017  
